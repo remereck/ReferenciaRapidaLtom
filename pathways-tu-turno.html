@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PATHWAYS — Qué puedo hacer en mi turno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0e; --panel:#141a1d; --card:#1a2024; --card-hover:#212a2e;
+  --line: rgba(179,169,140,0.14); --line-strong: rgba(179,169,140,0.28);
+  --ink:#dcd4bd; --ink-bright:#f1ead4; --ink-dim:#8b9096;
+  --gold:#b3893f; --gold-bright:#d4ab5f;
+  --teal:#5b968a; --teal-dim:#3b6058;
+  --crimson:#a34848; --crimson-dim:#6b2f2f;
+  --font-display:'Cormorant Garamond', serif;
+  --font-body:'Spectral', serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse 1100px 700px at 10% -10%, rgba(91,150,138,0.08), transparent 60%),
+    radial-gradient(ellipse 900px 600px at 100% 0%, rgba(179,137,63,0.07), transparent 55%),
+    var(--bg);
+  color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:#8a6a30; color:#0a0c0e;}
+.wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+.topnav{position:sticky; top:0; z-index:40; background:rgba(10,12,14,0.88); backdrop-filter:blur(10px); border-bottom:1px solid var(--line);}
+.topnav-inner{max-width:1180px; margin:0 auto; padding:14px 28px; display:flex; align-items:center; gap:22px; overflow-x:auto; scrollbar-width:none;}
+.topnav-inner::-webkit-scrollbar{display:none;}
+.brand{font-family:var(--font-display); font-weight:700; font-size:19px; color:var(--ink-bright); letter-spacing:.06em; white-space:nowrap; display:flex; align-items:baseline; gap:8px;}
+.brand small{font-family:var(--font-mono); font-size:10px; color:var(--gold); letter-spacing:.15em;}
+.navlinks{display:flex; gap:4px;}
+.navlinks a{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-dim); text-decoration:none; padding:8px 11px; border-radius:2px; white-space:nowrap;}
+.navlinks a:hover{color:var(--ink-bright); background:var(--card);}
+
+.hero{padding:56px 0 40px;}
+.hero .eyebrow{font-family:var(--font-mono); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--teal); margin:0 0 10px;}
+.hero h1{font-family:var(--font-display); font-weight:700; font-size:clamp(38px,6vw,60px); line-height:.98; margin:0 0 10px; color:var(--ink-bright);}
+.hero h1 em{font-style:italic; color:var(--gold-bright); font-weight:600;}
+.hero p{color:var(--ink-dim); max-width:640px; font-size:15.5px; margin:0;}
+
+/* turn sequence strip */
+.seq-strip{display:flex; align-items:center; gap:0; margin:34px 0 0; overflow-x:auto; padding-bottom:6px;}
+.seq-step{flex:none; display:flex; align-items:center; gap:10px; padding:10px 18px 10px 0;}
+.seq-step .dot{width:34px; height:34px; border-radius:50%; border:1px solid var(--line-strong); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:12px; color:var(--gold-bright); flex:none;}
+.seq-step .lbl{font-size:13px; color:var(--ink-dim); white-space:nowrap;}
+.seq-arrow{color:var(--line-strong); font-size:16px; flex:none;}
+
+section{padding:56px 0; border-top:1px solid var(--line);}
+.section-head{display:flex; align-items:baseline; gap:14px; margin-bottom:6px; flex-wrap:wrap;}
+.section-title{font-family:var(--font-display); font-weight:700; font-size:clamp(26px,3.2vw,36px); color:var(--ink-bright); margin:0; letter-spacing:.01em;}
+.section-badge{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--bg); background:var(--gold-bright); padding:3px 10px; border-radius:20px;}
+.section-badge.once{background:var(--teal);}
+.section-badge.free{background:var(--ink-dim); color:var(--bg);}
+.section-desc{color:var(--ink-dim); max-width:640px; margin:8px 0 26px; font-size:14.5px;}
+
+.grid{display:grid; gap:14px;}
+.grid.cols-3{grid-template-columns:repeat(3,1fr);}
+.grid.cols-4{grid-template-columns:repeat(4,1fr);}
+@media (max-width:900px){.grid.cols-3,.grid.cols-4{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:560px){.grid.cols-3,.grid.cols-4{grid-template-columns:1fr;}}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:2px; padding:17px 18px 15px; cursor:pointer; transition:.15s; position:relative; overflow:hidden;}
+.card::before{content:""; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--accent,var(--gold)); opacity:.55;}
+.card:hover{border-color:var(--line-strong); background:var(--card-hover); transform:translateY(-2px);}
+.card .k{font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--accent,var(--teal)); margin-bottom:7px; display:block;}
+.card h4{font-family:var(--font-display); font-weight:700; font-size:18.5px; margin:0 0 5px; color:var(--ink-bright);}
+.card p{margin:0; font-size:12.8px; color:var(--ink-dim); line-height:1.4;}
+
+table{width:100%; border-collapse:collapse; font-size:13.5px; margin:10px 0;}
+th{text-align:left; font-family:var(--font-mono); font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); border-bottom:1px solid var(--line-strong); padding:7px 10px; font-weight:600;}
+td{padding:7px 10px; border-bottom:1px solid var(--line); color:var(--ink); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+
+.overlay{position:fixed; inset:0; background:rgba(5,6,7,0.78); backdrop-filter:blur(3px); display:none; align-items:flex-start; justify-content:center; z-index:100; padding:5vh 18px; overflow-y:auto;}
+.overlay.show{display:flex;}
+.modal{background:var(--panel); border:1px solid var(--line-strong); border-radius:3px; max-width:700px; width:100%; margin-bottom:5vh; box-shadow:0 30px 80px rgba(0,0,0,.6); animation:rise .18s ease;}
+@keyframes rise{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+.modal-head{padding:24px 28px 16px; border-bottom:1px solid var(--line); position:relative;}
+.modal-head .k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--teal);}
+.modal-head h3{font-family:var(--font-display); font-size:27px; margin:6px 0 0; color:var(--ink-bright); font-weight:700;}
+.modal-close{position:absolute; top:18px; right:20px; background:none; border:1px solid var(--line-strong); color:var(--ink-dim); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:16px;}
+.modal-close:hover{color:var(--ink-bright); border-color:var(--gold);}
+.modal-body{padding:20px 28px 28px; font-size:14.5px; color:var(--ink);}
+.modal-body p{line-height:1.6; margin:0 0 10px;}
+.modal-body ul{margin:0 0 10px; padding-left:20px;}
+.modal-body li{margin-bottom:6px; line-height:1.5;}
+
+footer{padding:34px 28px 56px; text-align:center; color:var(--ink-dim); font-size:12px; font-family:var(--font-mono); border-top:1px solid var(--line);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">PATHWAYS <small>TU TURNO</small></div>
+    <div class="navlinks">
+      <a href="#movimiento">Movimiento</a>
+      <a href="#maniobra">Maniobra</a>
+      <a href="#gratis">Acciones Gratis</a>
+      <a href="#defensas">Defensas</a>
+      <a href="#opciones">Opciones de Ataque</a>
+      <a href="#estados">Estados</a>
+      <a href="#ambiente">Entorno</a>
+      <a href="#descanso">Descanso</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero wrap">
+  <p class="eyebrow">Powered by GURPS · Combate</p>
+  <h1>¿Qué puedo hacer en <em>mi turno</em>?</h1>
+  <p>Un round dura 1 segundo. En tu turno eliges <b>una Maniobra</b>. Cuando te atacan, puedes intentar <b>una Defensa Activa</b>. Todo lo demás —acciones gratis, opciones de ataque, estados— se apila sobre esa base.</p>
+  <div class="seq-strip">
+    <div class="seq-step"><div class="dot">1</div><div class="lbl">Te mueves (parte de la Maniobra)</div></div>
+    <div class="seq-arrow">→</div>
+    <div class="seq-step"><div class="dot">2</div><div class="lbl">Eliges 1 Maniobra</div></div>
+    <div class="seq-arrow">→</div>
+    <div class="seq-step"><div class="dot">3</div><div class="lbl">Aplicas Opciones de Ataque (si atacas)</div></div>
+    <div class="seq-arrow">→</div>
+    <div class="seq-step"><div class="dot">4</div><div class="lbl">Rival responde con Defensa Activa</div></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="movimiento">
+    <div class="section-head"><h2 class="section-title">Movimiento</h2><span class="section-badge free">Limitado por Movimiento Básico</span></div>
+    <p class="section-desc">Puedes moverte en cualquier momento de tu turno —antes, después o repartido en tu Maniobra— sin exceder tu Movimiento Básico (Velocidad Básica redondeada hacia abajo). También puedes interactuar con un objeto simple del entorno gratis, como parte de tu Maniobra.</p>
+    <div class="grid cols-3" id="movGrid"></div>
+  </section>
+
+  <section id="maniobra">
+    <div class="section-head"><h2 class="section-title">Maniobra</h2><span class="section-badge">1 / turno</span></div>
+    <p class="section-desc">Cada turno eliges exactamente una. Define lo que hace tu personaje ese segundo.</p>
+    <div class="grid cols-4" id="maniobraGrid"></div>
+  </section>
+
+  <section id="gratis">
+    <div class="section-head"><h2 class="section-title">Acciones Gratis y Esfuerzo Extra</h2><span class="section-badge free">No cuestan tu Maniobra</span></div>
+    <p class="section-desc">No sustituyen tu Maniobra, pero casi todas cuestan FP y se combinan con ella. Equivalen a la "acción adicional" de otros sistemas.</p>
+    <div class="grid cols-4" id="freeGrid"></div>
+  </section>
+
+  <section id="defensas">
+    <div class="section-head"><h2 class="section-title">Defensas Activas</h2><span class="section-badge once">1 por ataque recibido</span></div>
+    <p class="section-desc">Cuando te atacan, respondes con una defensa activa —salvo que hayas hecho un Ataque Total. Es tu "reacción". La Parada acumula −4 tras el primer uso en la misma ronda (−2 en armas de esgrima).</p>
+    <div class="grid cols-4" id="defGrid"></div>
+  </section>
+
+  <section id="opciones">
+    <div class="section-head"><h2 class="section-title">Opciones de Ataque</h2><span class="section-badge free">Se aplican a un ataque</span></div>
+    <p class="section-desc">A diferencia de la Maniobra (que define todo tu turno), estas son modificadores que aplicas <em>a un ataque concreto</em> dentro de una Maniobra de Ataque. Se pueden combinar entre sí.</p>
+    <div class="grid cols-3" id="optGrid"></div>
+  </section>
+
+  <section id="estados">
+    <div class="section-head"><h2 class="section-title">Estados</h2></div>
+    <p class="section-desc">Condiciones que alteran lo que puedes hacer en tu turno, resultado del daño, el agotamiento o el entorno.</p>
+    <div class="grid cols-4" id="statusGrid"></div>
+  </section>
+
+  <section id="ambiente">
+    <div class="section-head"><h2 class="section-title">Efectos Ambientales</h2></div>
+    <p class="section-desc">Distancia, luz y cobertura modifican tus tiradas de ataque a distancia — y las de tus enemigos contra ti.</p>
+    <div class="grid cols-3" id="envGrid"></div>
+  </section>
+
+  <section id="descanso">
+    <div class="section-head"><h2 class="section-title">Descansar</h2></div>
+    <p class="section-desc">Fuera de combate recuperas recursos a distinto ritmo según el tipo.</p>
+    <div class="grid cols-3" id="restGrid"></div>
+  </section>
+
+</main>
+
+<footer>Referencia no oficial de <em>Pathways — A Powered by GURPS Rulebook for Lord of the Mysteries</em> (v6.9e) · Uso personal, sin fines comerciales.</footer>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="k" id="mKicker"></div>
+      <h3 id="mTitle"></h3>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+function accentColor(a){ return a==="gold"?"var(--gold)":a==="teal"?"var(--teal)":a==="crimson"?"var(--crimson)":"var(--gold)"; }
+function renderGrid(id, items){
+  const el = document.getElementById(id);
+  el.innerHTML = items.map((c,i)=>`
+    <div class="card" style="--accent:${accentColor(c.accent)}" data-idx="${i}">
+      <span class="k">${c.k}</span><h4>${c.t}</h4><p>${c.p}</p>
+    </div>`).join("");
+  el.querySelectorAll(".card").forEach(card=>{
+    card.addEventListener("click", ()=> openModal(items[Number(card.dataset.idx)]));
+  });
+}
+function openModal(c){
+  document.getElementById("mKicker").textContent = c.k;
+  document.getElementById("mTitle").textContent = c.t;
+  document.getElementById("mBody").innerHTML = c.body;
+  document.getElementById("overlay").classList.add("show");
+}
+function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
+document.getElementById("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeModal(); });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+
+const movCards = [
+  {k:"Regla base", accent:"teal", t:"Movimiento Básico", p:"= Velocidad Básica redondeada hacia abajo.",
+   body:`<p>Tu Movimiento Básico es tu Velocidad Básica <b>(HT+DX)/4</b> redondeada hacia abajo. A atributos iniciales de 9, la Velocidad Básica es 4.50 → Movimiento Básico 4.</p>
+   <p>Puedes moverte hasta esa distancia en metros en tu turno, repartida como quieras alrededor de tu Maniobra (antes y/o después de atacar, por ejemplo), y encarar cualquier dirección al hacerlo.</p>`},
+  {k:"Gratis", accent:"gold", t:"Interactuar con el Entorno", p:"Una interacción simple es gratis dentro de tu Maniobra.",
+   body:`<p>Abrir una puerta normal, recoger un objeto del suelo, tirar de una palanca — ese tipo de interacción simple no consume una Maniobra aparte; se hace como parte natural de la que ya elegiste ese turno.</p>`},
+  {k:"Encumbrance", accent:"crimson", t:"Carga y Penalización de Movimiento", p:"Cargar de más reduce tu Movimiento y tu Esquivar.",
+   body:`<table><tr><th>Nivel</th><th>Carga máx.</th><th>Penalización</th></tr>
+   <tr><td>Ninguno</td><td>Carga Básica (BL) o menos</td><td>Sin penalización</td></tr>
+   <tr><td>Ligero</td><td>Hasta 2×BL</td><td>−1 Mov., −1 Esquivar</td></tr>
+   <tr><td>Medio</td><td>Hasta 3×BL</td><td>−2 Mov., −2 Esquivar</td></tr>
+   <tr><td>Pesado</td><td>Hasta 6×BL</td><td>−3 Mov., −3 Esquivar</td></tr>
+   <tr><td>Muy Pesado</td><td>Hasta 10×BL</td><td>−4 Mov., −4 Esquivar</td></tr>
+   <tr><td>Sobrecarga</td><td>Hasta 15×BL</td><td>−5 Mov./Esq.; no puedes correr</td></tr></table>
+   <p>Carga Básica (BL) = (ST × ST) / 5 lbs.</p>`},
+];
+
+const maniobraCards = [
+  {k:"Movimiento", accent:"teal", t:"Mover", p:"Movimiento completo. Puedes encarar cualquier dirección.", body:`<p>Te mueves hasta tu Movimiento Básico completo en metros. No atacas ni haces nada más ese turno salvo la interacción gratuita con el entorno.</p>`},
+  {k:"Preparación", accent:"teal", t:"Preparar (Ready)", p:"Recarga, desenfunda, bebe un vial o prepara equipo.", body:`<p>Un paso de movimiento incluido. Úsalo para recargar un arma, sacar un objeto, beber una poción o preparar equipo para su uso.</p>`},
+  {k:"Distancia", accent:"gold", t:"Apuntar (a distancia)", p:"+1 por turno apuntando, hasta ACC+2.", body:`<p>Suma el ACC (precisión) del arma a tu próximo ataque a distancia. +1 adicional por cada turno extra apuntando, hasta un máximo de ACC+2. Se cancela si sufres una Defensa Activa o resultas herido.</p>`},
+  {k:"Pasiva", accent:"teal", t:"No Hacer Nada", p:"Si estás Aturdido: −4 a Defensa Activa. Si no, descansas y recuperas FP.", body:`<p>Si estás Aturdido, esta maniobra impone −4 a tu Defensa Activa. En cualquier otro caso, simplemente descansas ese turno, lo que contribuye a tu recuperación de FP.</p>`},
+  {k:"Foco", accent:"gold", t:"Concentrarse", p:"Canaliza poderes/habilidades que requieren enfoque.", body:`<p>Un paso de movimiento incluido. Si estás herido o defendiéndote ese mismo turno, tira Voluntad−3 para mantener la concentración.</p>`},
+  {k:"Reactiva", accent:"crimson", t:"Esperar", p:"Define un disparador; al ocurrir, ejecutas tu maniobra elegida al instante.", body:`<p>Declaras una condición ("si se acerca, le disparo"). Cuando esa condición se cumple, realizas inmediatamente la maniobra que elegiste, interrumpiendo el turno de quien la disparó.</p>`},
+  {k:"Ofensiva", accent:"crimson", t:"Ataque Regular", p:"Un ataque cuerpo a cuerpo o a distancia. 1 paso antes o después.", body:`<p>La maniobra de ataque estándar. Puedes combinarla con Opciones de Ataque como Ataque Rápido o Ataque Engañoso.</p>`},
+  {k:"Ofensiva", accent:"crimson", t:"Ataque Total (Determinado)", p:"2 FP · +4 golpe cc / +1 a distancia · no puedes defenderte.", body:`<p>Sacrificas tu defensa este turno a cambio de precisión: +4 al impacto cuerpo a cuerpo o +1 a distancia. No puedes usar ninguna Defensa Activa hasta tu próximo turno.</p>`},
+  {k:"Ofensiva", accent:"crimson", t:"Ataque Total (Fuerte)", p:"2 FP · +2 al daño · no puedes defenderte.", body:`<p>+2 de daño en un ataque cuerpo a cuerpo. No puedes defenderte hasta tu próximo turno.</p>`},
+  {k:"Ofensiva", accent:"crimson", t:"Ataque Total (Doble)", p:"2 FP · dos ataques separados · no puedes defenderte.", body:`<p>Realizas dos tiradas de ataque independientes. No puedes defenderte hasta tu próximo turno.</p>`},
+  {k:"Ofensiva", accent:"crimson", t:"Ataque con Carga", p:"Movimiento completo + ataque a −4. No puedes defenderte.", body:`<p>Te desplazas tu distancia completa y luego atacas, a −4 al impacto. No puedes defenderte hasta tu próximo turno (a menos que pagues Esfuerzo Extra para ignorar la penalización — ver Acciones Gratis).</p>`},
+  {k:"Defensiva", accent:"teal", t:"Defensa Total (Aumentada)", p:"2 FP · +2 a una defensa hasta tu próximo turno. No atacas.", body:`<p>Eliges una defensa activa (Esquivar, Parada o Bloqueo) y la refuerzas +2 hasta tu siguiente turno. No puedes atacar este turno.</p>`},
+  {k:"Defensiva", accent:"teal", t:"Defensa Total (Doble)", p:"2 FP · usa dos defensas distintas contra un mismo ataque.", body:`<p>Contra un único ataque, puedes intentar dos tipos de defensa diferentes en sucesión (p. ej. Parada y luego Esquivar si falla la primera). No puedes atacar este turno.</p>`},
+  {k:"Táctica", accent:"gold", t:"Amago (Feint)", p:"Contienda de tu Habilidad de Arma vs. la del rival.", body:`<p>Tiras una Contienda Rápida de tu habilidad de combate contra la Habilidad de Melé, Capa, Escudo o DX del rival. Si ganas, restas tu margen de victoria a la defensa activa del rival contra tu próximo Ataque, Ataque Total o Mover y Atacar en ese mismo turno.</p>`},
+];
+
+const freeCards = [
+  {k:"1 FP", accent:"gold", t:"Paso Extra (Giant Step)", p:"Un paso adicional antes o después del ataque.", body:`<p>Pagando 1 FP obtienes un paso extra de movimiento antes o después de tu ataque, sin gastar tu Maniobra.</p>`},
+  {k:"1 FP", accent:"gold", t:"Golpe Fuerte (Strong Blow)", p:"+2 al daño en un ataque cuerpo a cuerpo regular.", body:`<p>Solo aplicable a ataques cuerpo a cuerpo regulares (no a Ataques Totales). Cuesta 1 FP por +2 de daño.</p>`},
+  {k:"2 FP", accent:"crimson", t:"Carga Heroica", p:"Ignora la penalización −4 de un Ataque con Carga.", body:`<p>Al pagar 2 FP, tu Ataque con Carga no sufre la penalización habitual de −4 al impacto.</p>`},
+  {k:"1 FP", accent:"teal", t:"Defensa Febril (regla variante)", p:"+2 a una tirada de defensa; no puedes defender el próximo turno.", body:`<p>Pagando 1 FP obtienes +2 a una tirada de defensa activa concreta, a cambio de no poder defenderte en tu siguiente turno.</p>`},
+];
+
+const defCards = [
+  {k:"Universal", accent:"teal", t:"Esquivar", p:"Velocidad Básica (sin decimales) + 3.", body:`<p>No requiere arma ni habilidad. Puede usarse repetidamente en la misma ronda sin penalización acumulativa (a diferencia de la Parada).</p>`},
+  {k:"Armado", accent:"gold", t:"Parada (con arma)", p:"Habilidad de Arma ÷ 2 + 3.", body:`<p>El arma debe estar lista. Cada parada adicional en la misma ronda acumula −4 (−2 en armas de esgrima como estoque o espada corta).</p>`},
+  {k:"Desarmado", accent:"gold", t:"Parada (sin arma)", p:"Pelea o Lucha ÷ 2 + 3.", body:`<p>Pelea para parar armas sufre −3. Boxeo usa Boxeo÷2+3 e ignora esa penalización. Ninguna parada desarmada detiene ataques a distancia.</p>`},
+  {k:"Con escudo", accent:"crimson", t:"Bloqueo", p:"Habilidad de Escudo ÷ 2 + 3 + DB del escudo.", body:`<p>El escudo debe estar preparado. Una vez que bloqueas, no puedes volver a bloquear hasta tu próximo turno.</p>`},
+  {k:"Gratis", accent:"teal", t:"Retirada", p:"Retrocede 1 casilla: +3 Esquivar / +1 Bloqueo / +1 Parada.", body:`<p>Acción gratuita, una vez por ronda, contra un único ataque cuerpo a cuerpo.</p>`},
+  {k:"Gratis", accent:"teal", t:"Esquiva Acrobática", p:"Tira Acrobacias: éxito = +2 Esquivar; fallo = −2 Esquivar.", body:`<p>Acción gratuita. Se combina con la Retirada. El riesgo es real: si fallas la tirada de Acrobacias, tu Esquivar empeora en vez de mejorar.</p>`},
+  {k:"Gratis", accent:"teal", t:"¡Tírate! (Dive)", p:"+3 Esquivar solo contra ataques a distancia.", body:`<p>Te arrojas al suelo. Gastas tu siguiente turno levantándote (Cambiar Postura) antes de poder actuar con normalidad.</p>`},
+  {k:"Penalización", accent:"crimson", t:"Ser Atacado desde Flanco/Espalda", p:"Flanco: −2 a la defensa. Espalda: −4 a la defensa.", body:`<p>La posición relativa importa: un ataque por el costado impone −2 a cualquier defensa activa; por la espalda, −4.</p>`},
+];
+
+const optCards = [
+  {k:"Multiplica ataques", accent:"gold", t:"Ataque Rápido", p:"Divide un ataque cuerpo a cuerpo en dos, ambos a −6.", body:`<p>Conviertes tu Maniobra de Ataque en dos ataques separados contra el mismo objetivo o dos distintos. Ambos sufren −6 a la habilidad. Ataques rápidos adicionales acumulan la penalización.</p>`},
+  {k:"Debilita defensa rival", accent:"crimson", t:"Ataque Engañoso", p:"−2 a tu ataque por cada −1 impuesto a la defensa del rival.", body:`<p>Sacrificas precisión propia para dificultar la defensa ajena. La penalización máxima es la mitad de tu habilidad (redondeada hacia abajo). Se puede combinar con Ataque Rápido, aplicándolo a cada ataque por separado.</p>`},
+  {k:"Opcional", accent:"teal", t:"Localización de Impacto", p:"Apunta a una parte del cuerpo con penalización al ataque.", body:`<table><tr><th>Zona</th><th>Penal.</th><th>×</th></tr>
+  <tr><td>Torso</td><td>+0</td><td>×1</td></tr>
+  <tr><td>Brazo/Pierna</td><td>−2</td><td>×1</td></tr>
+  <tr><td>Mano</td><td>−4</td><td>×1</td></tr>
+  <tr><td>Cuello</td><td>−5</td><td>×1.5–2</td></tr>
+  <tr><td>Cara</td><td>−5</td><td>×1</td></tr>
+  <tr><td>Cráneo</td><td>−7</td><td>×4</td></tr>
+  <tr><td>Vitales</td><td>−3</td><td>×3</td></tr>
+  <tr><td>Ojo</td><td>−9</td><td>×4</td></tr></table>`},
+];
+
+const statusCards = [
+  {k:"Golpe fuerte", accent:"crimson", t:"Aturdido (Stunned)", p:"−4 a la Defensa Activa; tira HT cada turno para recuperarte.", body:`<p>Resultado habitual de fallar la tirada de Herida Mayor. Mientras estés aturdido, tu maniobra "No Hacer Nada" impone −4 a tu defensa. Tira HT al inicio de cada uno de tus turnos para recuperarte antes de tiempo.</p>`},
+  {k:"HP bajo", accent:"crimson", t:"Tambaleo (Reeling)", p:"A 1/3 de tu HP o menos: −1 a todas las tiradas.", body:`<p>Se activa automáticamente cuando tu HP actual cae a un tercio o menos de tu máximo. Penaliza cualquier tirada, no solo de combate.</p>`},
+  {k:"FP bajo", accent:"crimson", t:"Fatiga Severa", p:"A 1/3 de tu FP o menos: −1 a todas las tiradas; Mov. y Esquivar a la mitad.", body:`<p>Igual que Tambaleo pero por Fatiga. A 0 FP, cada punto adicional gastado cuesta 1 HP directamente.</p>`},
+  {k:"Derribado", accent:"gold", t:"Postura: Tumbado (Prone)", p:"−2 a ataques a distancia contra ti; −4 en cuerpo a cuerpo. Puedes ser derribado.", body:`<p>Estar en el suelo te hace más difícil de alcanzar a distancia, pero mucho más vulnerable cuerpo a cuerpo. Cambiar de postura para levantarte consume una acción.</p>`},
+  {k:"Agarre", accent:"gold", t:"Agarrado / Inmovilizado", p:"Contienda de Lucha vs. DX o Escapismo para librarte.", body:`<table><tr><th>Maniobra</th><th>Tirada</th></tr>
+  <tr><td>Agarrar</td><td>Lucha</td></tr>
+  <tr><td>Derribo</td><td>Lucha−1</td></tr>
+  <tr><td>Inmovilizar</td><td>Lucha−2</td></tr>
+  <tr><td>Escapar</td><td>Escapismo−2</td></tr></table>`},
+  {k:"Carga", accent:"teal", t:"Sobrecargado", p:"Reduce tu Movimiento y Esquivar según el nivel de carga.", body:`<p>Ver la tabla completa de Carga en la sección de Movimiento. En Sobrecarga (5) pierdes la capacidad de correr.</p>`},
+  {k:"CoR", accent:"crimson", t:"Deuda del Alma", p:"SPI bajo 0: +1 CoR por cada punto bajo cero.", body:`<p>Gastar más Espiritualidad de la que tienes te acerca a perder el control de tu personaje. La Corrupción por Deuda del Alma es permanente salvo ritual especial.</p>`},
+  {k:"Espiritual", accent:"crimson", t:"Agotamiento Espiritual", p:"A 0 SPI: se desactivan tus habilidades Beyonder.", body:`<p>Al llegar a 0 SPI no puedes activar ninguna habilidad con coste de SPI, y la Visión Espiritual se apaga. Por debajo de un tercio del máximo, sufres −3 a tiradas basadas en SPI (Desgaste Espiritual).</p>`},
+];
+
+const envCards = [
+  {k:"Distancia", accent:"gold", t:"Penalización por Rango", p:"De +0 (2m) a −6 o peor (100m+).", body:`<table><tr><th>Distancia</th><th>Penal.</th></tr>
+  <tr><td>Hasta 2 m</td><td>+0</td></tr>
+  <tr><td>3–5 m</td><td>−1</td></tr>
+  <tr><td>6–10 m</td><td>−2</td></tr>
+  <tr><td>11–20 m</td><td>−3</td></tr>
+  <tr><td>21–50 m</td><td>−4</td></tr>
+  <tr><td>51–100 m</td><td>−5</td></tr>
+  <tr><td>100+ m</td><td>−6 o peor</td></tr></table>`},
+  {k:"Visibilidad", accent:"teal", t:"Oscuridad y Niebla", p:"−3 a −9 según severidad.", body:`<p>La niebla densa de Backlund y la oscuridad nocturna imponen penalizaciones sustanciales a ataques a distancia y percepción, de −3 en penumbra leve hasta −9 en oscuridad total sin visión especial.</p>`},
+  {k:"Táctico", accent:"crimson", t:"Cobertura y Objetivo Móvil", p:"Cobertura: −2 al impacto, +2 DR en zonas cubiertas.", body:`<table><tr><th>Condición</th><th>Modificador</th></tr>
+  <tr><td>Objetivo quieto</td><td>+0</td></tr>
+  <tr><td>Objetivo caminando</td><td>−1</td></tr>
+  <tr><td>Objetivo corriendo</td><td>−2</td></tr>
+  <tr><td>Tirador se movió este turno</td><td>−2</td></tr>
+  <tr><td>Objetivo tumbado</td><td>−2 (a distancia) / −4 (cc a favor del atacante cc)</td></tr>
+  <tr><td>Objetivo con cobertura (medio cuerpo)</td><td>−2 al impacto, +2 DR en zona cubierta</td></tr></table>`},
+];
+
+const restCards = [
+  {k:"Rápida", accent:"gold", t:"Fatiga (FP)", p:"1 FP cada 10 min. de descanso; todo el FP tras 8h de sueño.", body:`<p>El recurso que más rápido se recupera. Descansar sin actividad extenuante devuelve 1 FP cada 10 minutos; dormir 8 horas restaura el total.</p>`},
+  {k:"Lenta", accent:"teal", t:"Puntos de Golpe (HP)", p:"1–3 HP por día de descanso natural, según tu HP máximo.", body:`<table><tr><th>Método</th><th>Recuperación</th></tr>
+  <tr><td>Recuperación natural (tirada de HT)</td><td>1 HP por día (2 con Curación Muy Rápida)</td></tr>
+  <tr><td>HP 20–29</td><td>×2 la tasa base</td></tr>
+  <tr><td>HP 30–39</td><td>×3 la tasa base</td></tr>
+  <tr><td>Primeros Auxilios</td><td>1 HP + detiene hemorragia (una vez por herida)</td></tr>
+  <tr><td>Médico (habilidad 12+)</td><td>1 HP por día de reposo en cama (2 en crítico)</td></tr></table>`},
+  {k:"Mística", accent:"crimson", t:"Espiritualidad (SPI)", p:"1 SPI por hora de descanso — la única tasa de recuperación.", body:`<p>Descansar sin combate, ritual o esfuerzo físico intenso recupera 1 SPI por hora. Es la única forma de recuperación de SPI en el juego. El combate o la magia interrumpen el descanso y detienen la recuperación.</p>`},
+];
+
+renderGrid("movGrid", movCards);
+renderGrid("maniobraGrid", maniobraCards);
+renderGrid("freeGrid", freeCards);
+renderGrid("defGrid", defCards);
+renderGrid("optGrid", optCards);
+renderGrid("statusGrid", statusCards);
+renderGrid("envGrid", envCards);
+renderGrid("restGrid", restCards);
+</script>
+</body>
+</html>
