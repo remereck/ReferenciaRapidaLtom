@@ -1,1 +1,0 @@
-# Referencia_RapitaLtom
